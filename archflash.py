@@ -1,23 +1,48 @@
 import os
 
 os.system('clear')
+print('''
+!!!  WARNING  !!!
+
+This installer can potentially wipe the drive completely... So backup any data before continuing this program
+
+Press Ctrl+C or Ctrl+D to Terminate the program''')
+
+while True:
+    res = input("Continue?(yes/no): ")
+    if res.lower()=="no":
+        exit()
+    elif res.lower()=="yes":
+        break
+    else:
+        print("Invalid option")
+os.system("clear")
 print("""Running Archflash Installation...
 (Make sure you're connected to the Internet)
 """)
 os.system("timedatectl set-ntp true")
-print("Listing connected devices")
+print("Listing connected devices and available RAM")
+print("Devices:")
 os.system("fdisk -l")
+print("RAM installed:")
+os.system("lsmem | grep Total")
 temp=input("Continue?(y/n):")
 if temp.lower()=="n":
     exit()
-print("""Next step will be of partitions
+os.system("clear")
+print("""Next step will be of partitions...
+
 Recommended settings:   1Gb for boot (/boot)
-                        4-6Gb for swap (Values close to the RAM installed in the system) 
+                        6 to 10 Gb for Swap if RAM size is 8Gb(-/+2Gb the size of RAM installed) 
                         The rest of the storage for root (/)
                         
 Minimum settings:       500Mb for boot (/boot)
-                        2Gb for swap (Values close to the RAM installed in the system) 
-                        The rest of the storage for root (/)""")
+                        1-2Gb for swap (Values close to the RAM installed in the system) 
+                        The rest of the storage for root (/)
+
+Partitioning will be done manually in cfdisk.
+""")
+print("Caution! This program(at the moment) does not support separate /home partition\n")
 input("Enter to continue")
 os.system("cfdisk")
 boot = input("Partition for boot(Ex: sda1):")
@@ -31,10 +56,12 @@ os.system("mount /dev/"+root+" /mnt")
 os.system("mkdir /mnt/boot")
 os.system("mount /dev/"+boot+" /mnt/boot")
 os.system("swapon /dev/"+swap)
-print("Updating mirror list")
+print("\nUpdating mirror list")
 os.system("reflector")
-print("Building the base system")
-os.system("pacstrap /mnt base linux linux-firmware python ")
+print("\nBuilding the base system\n")
+os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano")
 os.system("genfstab -U /mnt >> /mnt/etc/fstab")
 os.system("cp /root/archflash/* /mnt/")
-os.system("arch-chroot /mnt/ python archflash_next.py")
+print("Mounting drives...")
+os.system("arch-chroot /mnt/ python archflash2.py")
+
