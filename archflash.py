@@ -63,5 +63,5 @@ os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano")
 os.system("genfstab -U /mnt >> /mnt/etc/fstab")
 os.system("cp /root/archflash/* /mnt/")
 print("Mounting drives...")
-os.system("arch-chroot /mnt/ python archflash2.py")
+os.system("arch-chroot /mnt/ python archflash_next.py")
 
