@@ -28,7 +28,6 @@ ans=input("Change the keyboard layout?(Y/n)")
 if ans.lower()!="n":
     print("Select a keyboard layout from the list(Showing only the most common ones)")
     os.system("ls /usr/share/kbd/keymaps/i386")
-    os.system("ls")
     key = input("Enter the keyboard standard(QWERTY/DVORAK/etc):")
     print("Note: press q to exit the list")
     input("Press Enter to continue ")
@@ -45,11 +44,10 @@ if parallel.lower()!="n":
         parallel_num = 7
     elif parallel_num < 2:
         parallel_num = 2
-    os.system('echo "ParallelDownloads='+parallel_num+'" > /etc/pacman.conf')
+    os.system('echo "ParallelDownloads='+str(parallel_num)+'" > /etc/pacman.conf')
 os.system("clear")
 print("Installing Reflector to update the mirror list...")
 os.system("pacman -S reflector")
-os.system("reflector --latest 20 --protocol https --sort rate --save /etc/pacman.d/mirrorlist")
 os.system("sudo systemctl enable reflector.service reflector.timer")
 os.system("clear")
 print("\nUpdating mirror list")
@@ -60,7 +58,7 @@ os.system('''pacman -S --needed dhcpcd pacman-contrib archlinux-keyring base-dev
                     zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
                     networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
                     exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
-                    pulseausio-bluetooth pulseaudio-equilizer xorg-server xorg-xinit git''')
+                    pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git''')
 vendor_name=['amd','intel','other']
 while True:
     vendor=str(input("Enter the processor vendor name (AMD/Intel):"))
@@ -68,6 +66,7 @@ while True:
         if vendor.lower() == 'other':
             break
         os.system("pacman -S --needed "+vendor.lower()+"-ucode")
+        break
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
@@ -78,7 +77,7 @@ if ans.lower() != "n":
     while True:
         print("List of AUR helpers:")
         for x in aur_list:
-            print(y+")"+x)
+            print(str(y)+")"+x)
         aur_helper = input("Enter the name of the AUR helper from the above list:")
         if aur_helper.lower() in aur_list:
             if aur_helper.lower() == "none":
@@ -90,6 +89,7 @@ if ans.lower() != "n":
             os.system("rm -rf "+aur_helper)
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
+            y=1
 os.system("clear")
 os.system("systemctl disable dhcpcd")
 os.system("systemctl enable sshd")
@@ -109,5 +109,4 @@ os.system("useradd -m "+account_name)
 print("Set the password for user account "+account_name)
 os.system("passwd "+account_name)
 os.system("exit")
-
 
