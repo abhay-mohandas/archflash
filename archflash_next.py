@@ -39,7 +39,7 @@ if ans.lower()!="n":
 os.system("clear")
 parallel=input("Enable parallel downloads?(Y/n):")
 if parallel.lower()!="n":
-    parallel_num = input("Enter the number of parallel downloads to be enabled(2-7):")
+    parallel_num = int(input("Enter the number of parallel downloads to be enabled(2-7):"))
     if parallel_num > 7:
         parallel_num = 7
     elif parallel_num < 2:
@@ -78,6 +78,7 @@ if ans.lower() != "n":
         print("List of AUR helpers:")
         for x in aur_list:
             print(str(y)+")"+x)
+            y += 1
         aur_helper = input("Enter the name of the AUR helper from the above list:")
         if aur_helper.lower() in aur_list:
             if aur_helper.lower() == "none":
@@ -95,7 +96,6 @@ os.system("systemctl disable dhcpcd")
 os.system("systemctl enable sshd")
 os.system("systemctl enable cronie")
 os.system("systemctl enable NetworkManager")
-os.system("systemctl enable numlockon")
 print("Configuring GRUB...\n")
 os.system("mkdir /boot/grub")
 os.system("grub-mkconfig -o /boot/grub/grub.cfg")
@@ -109,4 +109,9 @@ os.system("useradd -m "+account_name)
 print("Set the password for user account "+account_name)
 os.system("passwd "+account_name)
 os.system("exit")
+
+
+
+
+
 
