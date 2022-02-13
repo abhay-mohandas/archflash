@@ -27,10 +27,11 @@ print("The default keyboard layout is QWERTY/US")
 ans=input("Change the keyboard layout?(Y/n)")
 if ans.lower()!="n":
     print("Select a keyboard layout from the list(Showing only the most common ones)")
+    os.system("cd /usr/share/kbd/keymaps/i386")
+    os.system("ls")
     key = input("Enter the keyboard standard(QWERTY/DVORAK/etc):")
     print("Note: press q to exit the list")
     input("Press Enter to continue ")
-    os.system("cd /usr/share/kbd/keymaps/i386")
     os.system("ls **/*.map.gz | grep "+key.lower()+" | less")
     keymap = input("Enter the layout name (Exclude the .map.gz extention)(Ex:us/uk/etc):")
     os.system('''echo "KEYMAP='''+keymap.lower()+'''" > /etc/vconsole.conf''')
@@ -45,7 +46,6 @@ if parallel.lower()!="n":
     elif parallel_num < 2:
         parallel_num = 2
     os.system('echo "ParallelDownloads='+parallel_num+'" > /etc/pacman.conf')
-os.system("clear")
 os.system("clear")
 print("Installing Reflector to update the mirror list...")
 os.system("pacman -S reflector")
@@ -109,3 +109,9 @@ os.system("useradd -m "+account_name)
 print("Set the password for user account "+account_name)
 os.system("passwd "+account_name)
 os.system("exit")
+
+
+
+
+
+
