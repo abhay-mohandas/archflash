@@ -24,9 +24,9 @@ os.system("timedatectl set-ntp true")
 print("Listing connected devices and available RAM")
 print("Devices:")
 os.system("fdisk -l")
-print("RAM installed:")
+print("\nRAM installed:")
 os.system("lsmem | grep Total")
-temp=input("Continue?(y/n):")
+temp=input("Continue?(Y/n):")
 if temp.lower()=="n":
     exit()
 os.system("clear")
@@ -39,6 +39,11 @@ Recommended settings:   1Gb for boot (/boot)
 Minimum settings:       500Mb for boot (/boot)
                         1-2Gb for swap (Values close to the RAM installed in the system) 
                         The rest of the storage for root (/)
+
+System Types:
+                /boot   : EFI System
+                swap    : Linux swap
+                /home   : Linux filesystem
 
 Partitioning will be done manually in cfdisk.
 """)
@@ -57,7 +62,7 @@ os.system("mkdir /mnt/boot")
 os.system("mount /dev/"+boot+" /mnt/boot")
 os.system("swapon /dev/"+swap)
 print("\nBuilding the base system\n")
-os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano")
+os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano less grep")
 os.system("genfstab -U /mnt >> /mnt/etc/fstab")
 os.system("cp /root/archflash/* /mnt/")
 print("Mounting drives...")
