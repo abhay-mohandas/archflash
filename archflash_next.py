@@ -44,7 +44,7 @@ if parallel.lower()!="n":
         parallel_num = 7
     elif parallel_num < 2:
         parallel_num = 2
-    os.system('echo "ParallelDownloads='+str(parallel_num)+'" > /etc/pacman.conf')
+    os.system('echo "ParallelDownloads='+str(parallel_num)+'" >> /etc/pacman.conf')
 os.system("clear")
 print("Installing Reflector to update the mirror list...")
 os.system("pacman -S reflector")
@@ -83,11 +83,10 @@ if ans.lower() != "n":
         if aur_helper.lower() in aur_list:
             if aur_helper.lower() == "none":
                 break
-            os.system("git clone https://aur.archlinux.org/"+aur_helper+".git")
-            os.system("cd "+aur_helper)
-            os.system("makepkg -si")
-            os.system("cd")
-            os.system("rm -rf "+aur_helper)
+            os.system("useradd aurhelper")
+            os.system("sudo -u aurhelper -- git clone https://aur.archlinux.org/"+aur_helper+".git")
+            os.system("sudo -u aurhelper -- cd "+aur_helper+" && makepkg -si")
+            break
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
             y=1
@@ -108,10 +107,9 @@ account_name=input("Enter the user account name:")
 os.system("useradd -m "+account_name)
 print("Set the password for user account "+account_name)
 os.system("passwd "+account_name)
+os.system("usermod -aG wheel "+account_name)
+while True:
+    a = input("Custom command: ")
+    os.system(a)
 os.system("exit")
-
-
-
-
-
 
