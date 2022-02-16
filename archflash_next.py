@@ -44,7 +44,7 @@ if parallel.lower()!="n":
         parallel_num = 7
     elif parallel_num < 2:
         parallel_num = 2
-    os.system("echo [options]")
+    os.system('echo "[options]" >> /etc/pacman.conf')
     os.system('echo "ParallelDownloads='+str(parallel_num)+'" >> /etc/pacman.conf')
 os.system("clear")
 print("Installing Reflector to update the mirror list...")
