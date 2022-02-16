@@ -71,7 +71,9 @@ while True:
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
+
 os.system('echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers')
+'''
 aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Do you want to install an AUR helper(Ex:yay)?(Y/n):")
 y=1
@@ -93,6 +95,7 @@ if ans.lower() != "n":
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
             y=1
+            '''
 os.system("clear")
 os.system("userdel ")
 os.system("systemctl disable dhcpcd")
@@ -116,4 +119,6 @@ while True:
     a = input("Custom command: ")
     os.system(a)
 os.system("exit")
+
+
 
