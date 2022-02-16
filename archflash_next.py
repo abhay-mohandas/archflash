@@ -71,7 +71,6 @@ while True:
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
-os.system('echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers')
 aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Do you want to install an AUR helper(Ex:yay)?(Y/n):")
 y=1
@@ -105,14 +104,18 @@ os.system("clear")
 print("Set the root password")
 os.system("passwd root")
 os.system("clear")
-account_name=input("Enter the user account name:")
-os.system("useradd -m "+account_name)
-print("Set the password for user account "+account_name)
-os.system("passwd "+account_name)
-os.system("usermod -aG wheel "+account_name)
+while True:
+    account_name=input("Enter the user account name(Leave blank to continue):")
+    if account_name.lower() == "":
+        break
+    os.system("useradd -m "+account_name)
+    print("Set the password for user account "+account_name)
+    os.system("passwd "+account_name)
+    ans=input("\nAdd user "+account_name+" to sudoers file?(Y/n):")
+    if ans.lower()!="n":
+        os.system('echo "'+account_name+' ALL= (ALL)ALL" >> /etc/sudoers')
+        continue
+    break    
 while True:
     a = input("Custom command: ")
     os.system(a)
-os.system("exit")
-
-
