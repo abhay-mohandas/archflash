@@ -54,12 +54,16 @@ os.system("clear")
 print("\nUpdating mirror list")
 os.system("sudo systemctl start reflector.service reflector.timer")
 os.system("clear")
-print("Installing necessary files and dependencies\n")
+print("Installing necessary/basic files and dependencies\n")
 os.system('''pacman -S --needed dhcpcd pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
                     zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
-                    networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
+                    networkmanager openssh cronie xdg-user-dirs haveged grub os-prober libinput dosfstools ntfs-3g btrfs-progs \
                     exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
-                    pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git''')
+                    pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr''')
+ans=input("Install additional software?(Y/n):")
+if ans.lower() != "n":
+    soft_list=input("Enter the package name to be installed(separate by space for multiple packages):")
+    os.system("pacman -S "+soft_list)
 vendor_name=['amd','intel','other']
 while True:
     vendor=str(input("Enter the processor vendor name (AMD/Intel):"))
@@ -72,7 +76,7 @@ while True:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
 aur_list=["yay","paru","trizen","aura","none"]
-ans=input("Do you want to install an AUR helper(Ex:yay)?(Y/n):")
+ans=input("Do you want to install an AUR helper?(Y/n):")
 y=1
 if ans.lower() != "n":
     while True:
@@ -88,15 +92,28 @@ if ans.lower() != "n":
             os.system('echo "aurhelper ALL=(ALL) NOPASSWD: ALL " >> /etc/sudoers')
             os.system("sudo -u aurhelper -- git clone https://aur.archlinux.org/"+aur_helper+".git")
             os.system("sudo -u aurhelper -- cd "+aur_helper+" && makepkg -si")
-            z=input("custom input:")
+            z=input("custom input(Leave blank to continue to next step):")
+            if z == '':
+                break
             os.system(z)
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
-            y=1
+        y=1
 os.system("clear")
 os.system("systemctl disable dhcpcd")
 os.system("systemctl enable sshd cronie NetworkManager")
-print("Configuring GRUB...\n")
+os.system("clear")
+print("GRUB Configuration...\n")
+ans = input("Enter the name of the boot partition:")
+boot_option = input("Is this a EFI system?(Y/n):")
+if boot_option.lower() == "n":
+    os.system("pacman -S os-prober")
+    os.system("grub-install /dev/"+ans)
+else:
+    os.system("pacman -S efibootmgr")
+    os.system("mkdir /boot/efi")
+    os.system("mount /dev/"+ans+" /boot/efi")
+    os.system("grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi")
 os.system("mkdir /boot/grub")
 os.system("grub-mkconfig -o /boot/grub/grub.cfg")
 input("Press Enter to continue ")
@@ -118,4 +135,6 @@ while True:
     break    
 while True:
     a = input("Custom command: ")
+    if a == "":
+        break
     os.system(a)
