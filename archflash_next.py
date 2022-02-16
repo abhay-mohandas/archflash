@@ -71,9 +71,7 @@ while True:
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
-
 os.system('echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers')
-'''
 aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Do you want to install an AUR helper(Ex:yay)?(Y/n):")
 y=1
@@ -87,21 +85,18 @@ if ans.lower() != "n":
         if aur_helper.lower() in aur_list:
             if aur_helper.lower() == "none":
                 break
-            os.system("useradd aurhelper")
+            os.system("useradd -m aurhelper")
             os.system('echo "aurhelper ALL=(ALL) NOPASSWD: ALL " >> /etc/sudoers')
             os.system("sudo -u aurhelper -- git clone https://aur.archlinux.org/"+aur_helper+".git")
             os.system("sudo -u aurhelper -- cd "+aur_helper+" && makepkg -si")
-            break
+            z=input("custom input:")
+            os.system(z)
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
             y=1
-            '''
 os.system("clear")
-os.system("userdel ")
 os.system("systemctl disable dhcpcd")
-os.system("systemctl enable sshd")
-os.system("systemctl enable cronie")
-os.system("systemctl enable NetworkManager")
+os.system("systemctl enable sshd cronie NetworkManager")
 print("Configuring GRUB...\n")
 os.system("mkdir /boot/grub")
 os.system("grub-mkconfig -o /boot/grub/grub.cfg")
@@ -119,6 +114,5 @@ while True:
     a = input("Custom command: ")
     os.system(a)
 os.system("exit")
-
 
 
