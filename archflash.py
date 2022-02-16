@@ -49,8 +49,9 @@ System Types:
 Partitioning will be done manually in cfdisk.
 """)
 print("Caution! This program(at the moment) does not support separate /home partition\n")
+ans = input("Enter the device name(Ex:sda):")
 input("Enter to continue")
-os.system("cfdisk")
+os.system("cfdisk /dev/"+ans)
 print("Enter the partition names(Leave blank if none)")
 boot = input("Partition for boot(Ex: sda1):")
 swap = input("Partition for swap(Ex: sda2):")
