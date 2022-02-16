@@ -29,8 +29,8 @@ if ans.lower()!="n":
     print("Select a keyboard layout from the list(Showing only the most common ones)")
     os.system("ls /usr/share/kbd/keymaps/i386")
     key = input("Enter the keyboard standard(QWERTY/DVORAK/etc):")
-    print("Note: press q to exit the list")
-    input("Press Enter to continue ")
+    print("\nNote: press q to exit the list")
+    input("\nPress Enter to show the list ")
     os.system("ls /usr/share/kbd/keymaps/i386/**/*.map.gz | grep "+key.lower()+" | less")
     keymap = input("Enter the layout name (Exclude the .map.gz extention)(Ex:us/uk/etc):")
     os.system('''echo "KEYMAP='''+keymap.lower()+'''" > /etc/vconsole.conf''')
@@ -44,6 +44,7 @@ if parallel.lower()!="n":
         parallel_num = 7
     elif parallel_num < 2:
         parallel_num = 2
+    os.system("echo [options]")
     os.system('echo "ParallelDownloads='+str(parallel_num)+'" >> /etc/pacman.conf')
 os.system("clear")
 print("Installing Reflector to update the mirror list...")
@@ -70,6 +71,7 @@ while True:
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
+os.system('echo "%wheel ALL=(ALL) ALL" >> /etc/sudoers')
 aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Do you want to install an AUR helper(Ex:yay)?(Y/n):")
 y=1
@@ -84,6 +86,7 @@ if ans.lower() != "n":
             if aur_helper.lower() == "none":
                 break
             os.system("useradd aurhelper")
+            os.system('echo "aurhelper ALL=(ALL) NOPASSWD: ALL " >> /etc/sudoers')
             os.system("sudo -u aurhelper -- git clone https://aur.archlinux.org/"+aur_helper+".git")
             os.system("sudo -u aurhelper -- cd "+aur_helper+" && makepkg -si")
             break
@@ -91,6 +94,7 @@ if ans.lower() != "n":
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
             y=1
 os.system("clear")
+os.system("userdel ")
 os.system("systemctl disable dhcpcd")
 os.system("systemctl enable sshd")
 os.system("systemctl enable cronie")
