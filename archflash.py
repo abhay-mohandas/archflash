@@ -1,12 +1,12 @@
 import os
 
 os.system('clear')
-print('''
+print('''\033[31m
 !!!  WARNING  !!!
 
 This installer can potentially wipe the drive completely... So backup any data before continuing this program
 
-Press Ctrl+C or Ctrl+D to Terminate the program''')
+Press Ctrl+C or Ctrl+D to Terminate the program \033[0m \n''')
 
 while True:
     res = input("Continue?(yes/no): ")
@@ -38,19 +38,26 @@ Recommended settings:   1Gb for boot (/boot)
 
                         
 Minimum settings:       500Mb for boot (/boot)
-                        1-2Gb for swap (Values close to the RAM installed in the system) 
+                        1-2Gb for swap (Optional)
                         The rest of the storage for root (/)
 
 System Types:
-                /boot   : EFI System(If efi is available)
-                 swap   : Linux swap
+                /boot   : EFI System
+                swap    : Linux swap
                 /       : Linux filesystem
+
+[supports UEFI system only]
 
 Partitioning will be done manually in cfdisk.
 """)
-print("Caution! This program(at the moment) does not support separate /home partition\n")
-ans = input("Enter the device name(Ex:sda):")
-input("Enter to continue")
+print("\033[31m Caution! This program(at the moment) does not support separate /home partition\033[0m \n")
+while True:
+    ans = input("Enter the device name(Ex:sda):")
+    if ans == '':
+        print("\033[31m Invalid input! Try again...\033[0m")
+        continue
+    break
+input("\nEnter to continue")
 os.system("cfdisk /dev/"+ans)
 print("Enter the partition names(Leave blank if none)")
 boot = input("Partition for boot(Ex: sda1):")
@@ -72,7 +79,6 @@ print("\nBuilding the base system\n")
 os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano less grep")
 os.system("genfstab -U -p /mnt >> /mnt/etc/fstab")
 os.system("cp /root/archflash/archflash_next.py /mnt")
-print("Mounting drives...")
 os.system("arch-chroot /mnt/ python archflash_next.py")
 os.system("clear")
 print("Installation Complete!\n")
@@ -81,3 +87,4 @@ if ans.lower() != "n":
     os.system('reboot')
 else:
     os.system("clear")
+    
