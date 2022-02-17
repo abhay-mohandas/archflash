@@ -20,6 +20,7 @@ print("Next step is to edit the locale file by uncommenting the necessary locale
 input("Press Enter to continue")
 os.system("nano /etc/locale.gen")
 os.system("locale-gen")
+os.system("clear")
 pc_name=input("Enter the name of the computer:")
 os.system('''echo "'''+ pc_name +'''" > /etc/hostname''')
 os.system("clear")
@@ -54,12 +55,20 @@ os.system("clear")
 print("\nUpdating mirror list")
 os.system("sudo systemctl start reflector.service reflector.timer")
 os.system("clear")
-print("Installing necessary/basic files and dependencies\n")
-os.system('''pacman -S --needed dhcpcd pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
-                    zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
-                    networkmanager openssh cronie xdg-user-dirs haveged grub os-prober libinput dosfstools ntfs-3g btrfs-progs \
-                    exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
-                    pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr''')
+basic_programs = '''dhcpcd pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
+zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
+networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
+exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
+pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
+
+print("Installing necessary/basic programs and dependencies\n")
+print("The following programs will be installed:\n"+basic_programs)
+while True:    
+    os.system('pacman -S --needed '+basic_programs)
+    ans=input("\nWas the above programs installed successfully?(Y/n):")
+    if ans.lower() != "n":
+        break
+    print("Retrying installation...")
 ans=input("Install additional software?(Y/n):")
 if ans.lower() != "n":
     soft_list=input("Enter the package name to be installed(separate by space for multiple packages):")
@@ -105,15 +114,10 @@ os.system("systemctl enable sshd cronie NetworkManager")
 os.system("clear")
 print("GRUB Configuration...\n")
 ans = input("Enter the name of the boot partition:")
-boot_option = input("Is this a EFI system?(Y/n):")
-if boot_option.lower() == "n":
-    os.system("pacman -S os-prober")
-    os.system("grub-install /dev/"+ans)
-else:
-    os.system("pacman -S efibootmgr")
-    os.system("mkdir /boot/efi")
-    os.system("mount /dev/"+ans+" /boot/efi")
-    os.system("grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi")
+os.system("pacman -S --needed efibootmgr")
+os.system("mkdir /boot/efi")
+os.system("mount /dev/"+ans+" /boot/efi")
+os.system("grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi")
 os.system("mkdir /boot/grub")
 os.system("grub-mkconfig -o /boot/grub/grub.cfg")
 input("Press Enter to continue ")
