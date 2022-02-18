@@ -60,9 +60,8 @@ zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
 networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
 pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
-
 print("Installing necessary/basic programs and dependencies\n")
-print("The following programs will be installed:\n"+basic_programs)
+print("The following programs will be installed:\n"+basic_programs+"\n")
 while True:    
     os.system('pacman -S --needed '+basic_programs)
     ans=input("\nWas the above programs installed successfully?(Y/n):")
@@ -101,7 +100,7 @@ os.system("passwd root")
 os.system("clear")
 user_list = []
 while True:
-    account_name=input("Enter the user account name(Leave blank to continue):")
+    account_name=input("\nEnter the user account name(Leave blank to continue):")
     if account_name.lower() == "":
         break
     os.system("useradd -m "+account_name)
@@ -142,13 +141,14 @@ if ans.lower() != "n":
         if aur_helper.lower() in aur_list:
             if aur_helper.lower() == "none":
                 break
-            os.system("sudo -u "+aur_account+" -- git clone https://aur.archlinux.org/"+aur_helper+".git /home/"+aur_account+"aurbuilder")
-            os.system("sudo -u "+aur_account+" -- bash -c 'cd /home/"+aur_account+"/aurbuilder && makepkg -si'")
+            os.system("sudo -u "+aur_account+" -- bash -c 'git clone https://aur.archlinux.org/"+aur_helper+".git /home/"+aur_account+"/"+aur_helper+"'")
+            os.system("sudo -u "+aur_account+" -- bash -c 'cd /home/"+aur_account+"/"+aur_helper+" && makepkg -si'")
+            break
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
         y=1
 while True:
-    a = input("Custom command(Leave blank to skip): ")
+    a = input("Custom command to be executed(Leave blank to skip): ")
     if a == "":
         break
     os.system(a)
