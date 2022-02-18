@@ -40,9 +40,9 @@ if ans.lower()!="n":
 os.system("clear")
 parallel=input("Enable parallel downloads?(Y/n):")
 if parallel.lower()!="n":
-    parallel_num = int(input("Enter the number of parallel downloads to be enabled(2-7):"))
-    if parallel_num > 7:
-        parallel_num = 7
+    parallel_num = int(input("Enter the number of parallel downloads to be enabled(2-10):"))
+    if parallel_num > 10:
+        parallel_num = 10
     elif parallel_num < 2:
         parallel_num = 2
     os.system('echo "[options]" >> /etc/pacman.conf')
@@ -55,7 +55,7 @@ os.system("clear")
 print("\nUpdating mirror list")
 os.system("sudo systemctl start reflector.service reflector.timer")
 os.system("clear")
-basic_programs = '''dhcpcd pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
+basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
 zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
 networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
@@ -84,32 +84,6 @@ while True:
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 os.system("clear")
-aur_list=["yay","paru","trizen","aura","none"]
-ans=input("Do you want to install an AUR helper?(Y/n):")
-y=1
-if ans.lower() != "n":
-    while True:
-        print("List of AUR helpers:")
-        for x in aur_list:
-            print(str(y)+")"+x)
-            y += 1
-        aur_helper = input("Enter the name of the AUR helper from the above list:")
-        if aur_helper.lower() in aur_list:
-            if aur_helper.lower() == "none":
-                break
-            os.system("useradd -m aurhelper")
-            os.system('echo "aurhelper ALL=(ALL) NOPASSWD: ALL " >> /etc/sudoers')
-            os.system("sudo -u aurhelper -- git clone https://aur.archlinux.org/"+aur_helper+".git")
-            os.system("sudo -u aurhelper -- cd "+aur_helper+" && makepkg -si")
-            z=input("custom input(Leave blank to continue to next step):")
-            if z == '':
-                break
-            os.system(z)
-        else:
-            print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
-        y=1
-os.system("clear")
-os.system("systemctl disable dhcpcd")
 os.system("systemctl enable sshd cronie NetworkManager")
 os.system("clear")
 print("GRUB Configuration...\n")
@@ -125,6 +99,7 @@ os.system("clear")
 print("Set the root password")
 os.system("passwd root")
 os.system("clear")
+user_list = []
 while True:
     account_name=input("Enter the user account name(Leave blank to continue):")
     if account_name.lower() == "":
@@ -135,10 +110,45 @@ while True:
     ans=input("\nAdd user "+account_name+" to sudoers file?(Y/n):")
     if ans.lower()!="n":
         os.system('echo "'+account_name+' ALL= (ALL)ALL" >> /etc/sudoers')
-        continue
-    break    
+    user_list.append(account_name)
+os.system("clear")
+aur_list=["yay","paru","trizen","aura","none"]
+ans=input("Do you want to install an AUR helper?(Y/n):")
+if ans.lower() != "n":
+    y=1
+    print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts will be used")
+    if len(user_list) <= 1:
+        aur_account = user_list[0]
+        print("Using user account '"+aur_account+"'")
+    else:
+        while True:
+            print("Multiple user accounts found:")
+            for x in user_list:
+                print(str(y)+")"+x)
+                y+=1
+            aur_account = input("Enter the account name to be used(Requires sudo previlages):")
+            if aur_account in user_list:
+                print("Using user account '"+aur_account+"'")
+                break
+            print("Invalid Input! Try again")
+            y=1
+    y=1
+    while True:
+        print("List of AUR helpers:")
+        for x in aur_list:
+            print(str(y)+")"+x)
+            y += 1
+        aur_helper = input("Enter the name of the AUR helper from the above list:")
+        if aur_helper.lower() in aur_list:
+            if aur_helper.lower() == "none":
+                break
+            os.system("sudo -u "+aur_account+" -- git clone https://aur.archlinux.org/"+aur_helper+".git /home/"+aur_account+"aurbuilder")
+            os.system("sudo -u "+aur_account+" -- bash -c 'cd /home/"+aur_account+"/aurbuilder && makepkg -si'")
+        else:
+            print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
+        y=1
 while True:
-    a = input("Custom command: ")
+    a = input("Custom command(Leave blank to skip): ")
     if a == "":
         break
     os.system(a)
