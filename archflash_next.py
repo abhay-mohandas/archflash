@@ -1,29 +1,146 @@
 import os
 
+def clear():
+    os.system("clear")
 
-os.system("clear")
+def install(packages):
+    os.system("pacman -S --needed "+packages)
+
+
+def wm():
+    clear()
+    wm_list =  [["Stacking","fluxbox","openbox"],
+                ["Manual Tiling","bspwm","herbstluftwm","i3"],
+                ["Dynamic","awesome","spectrwm","qtile","xmonad"]]
+    while True:
+        print("List of Window Managers:")
+        for x in wm_list:
+            print(x[0]+":")
+            for y in x[1:]:
+                print("    ",y)
+            print()
+        wm_ans = input("Enter the name of the WM(Ex:openbox or i3): ")
+        if wm_ans == "":
+            return
+        for x in wm_list:
+            if wm_ans.lower() in x:
+                    return install(wm_ans.lower())
+        clear()
+        print("\nInvalid Input!(Leave the input blank to cancel)\n")
+
+
+def de():
+    clear()
+    de_list =  [["Gnome",["gnome","(Standard)"],["gnome-shell","(Minimal)"],["gnome-extra","(Standard with extra packages)"]],
+                ["KDE plasma",["plasma","(Standard)"],["plasma-desktop","(Minimal)"]],
+                ["Cinnamon",["cinnamon","(Standard)"]],
+                ["XFCE",["xfce4","(Standard)"]],
+                ["Budgie",["budgie-desktop","(Standard)"]],
+                ["LXQT",["lxqt","(Standard)"]],
+                ["MATE",["mate","(Standard)"]],
+                ["Deepin",["deepin","(Standard)"],["deepin-extra","(Standard with extra packages)"]]]
+    while True:
+        print("List of Desktop Environments:")
+        for x in de_list:
+            print(x[0]+":")
+            for y in x[1:]:
+                print("    ",y[0],y[1])
+            print()
+        de_ans = input("Enter the name of the DE(Ex:gnome or plasma): ")
+        if de_ans == "":
+            return
+        for x in de_list:
+            for y in x[1:]:
+                if de_ans.lower() in y:
+                    install(y[0])
+                    return
+        clear()
+        print("\nInvalid Input!(Leave the input blank to cancel)\n")
+
+
+def de_wm():
+    ans=input("Install a Desktop Environment/Window Manager?(Y/n):")
+    while True:
+        if ans.lower() != "n":
+            print('''Select one of the options:
+                1)DE (Desktop Environment)
+                2)WM (Window Manager)''')
+            de_or_wm=input("Enter the option(de/wm): ")
+            if "de" in de_or_wm.lower():
+                return de()
+            elif "wm" in de_or_wm.lower():
+                return wm()
+            elif de_or_wm == "":
+                return
+            else:
+                print("\nInvalid Input!(Leave the input blank to cancel)\n")
+
+def open_video():
+    clear()
+    driver_list =  [["xf86-video-amdgpu","AMD"],
+                    ["xf86-video-intel","Intel"],
+                    ["xf86-video-ati","ATI"],
+                    ["xf86-video-nouveau","Nvidia(Nouveau)"]]
+
+
+def closed_video():
+    pass
+
+def xorg_video():
+    pass
+
+
+def video_drivers():
+    clear()
+    ans=input("Install video drivers?(Y/n):")
+    if ans.lower() == "n":
+        return
+    while True:
+        print("""List of types of video driver to install:
+    1) Open Source video driver (AMD,ATI,Intel,Other Xorg video drivers) 
+    2) Closed Source video driver(Nvidia)
+    3) Xorg input drivers (Ex:libinput)
+
+Note:Open source Nvidia drivers are also listed(Under Open Source option) but installing it is depreciated
+     Drivers available in the AUR needs to be installed manually\n""")
+        video_type = input("Enter the option number (1/2):")
+        if video_type == "1":
+            open_video()
+        elif video_type == "2":
+            closed_video()
+        elif video_type == "3":
+            xorg_video()
+        elif video_type == "":
+            return
+        else:
+            clear()
+            print("\nInvalid Input!(Leave the input blank to cancel)\n")
+
+
+
+clear()
 print("Configuration and setup...")
 print("Setting up Locaton and Language information...")
 zone_dir=['Africa','America','Antartica','Arctic','Asia','Atlantic','Australia','Brazil','Canada','Chile','Etc','Europe','Indian','Mexico','Pacific','US']
 os.system("ls /usr/share/zoneinfo")
 region=input("Enter the location region(Ex:Asia/Europe/America):")
-os.system("clear")
+clear()
 if region.capitalize() in zone_dir or region.upper()=="US":
     os.system("ls /usr/share/zoneinfo/"+region.capitalize())
     city=input("Enter the city name from the list(Ex:Kolkata/London/Phoenix):")
     os.system("ln -sf /usr/share/zoneinfo/"+region.capitalize()+"/"+city.capitalize()+" /etc/localtime")
 else:
     os.system("ln -sf /usr/share/zoneinfo/"+region.capitalize()+" /etc/localtime")
-os.system("clear")
+clear()
 os.system("hwclock --systohc --utc")
 print("Next step is to edit the locale file by uncommenting the necessary locales and saving the file...")
 input("Press Enter to continue")
 os.system("nano /etc/locale.gen")
 os.system("locale-gen")
-os.system("clear")
+clear()
 pc_name=input("Enter the name of the computer:")
 os.system('''echo "'''+ pc_name +'''" > /etc/hostname''')
-os.system("clear")
+clear()
 print("The default keyboard layout is QWERTY/US")
 ans=input("Change the keyboard layout?(Y/n)")
 if ans.lower()!="n":
@@ -37,7 +154,7 @@ if ans.lower()!="n":
     os.system('''echo "KEYMAP='''+keymap.lower()+'''" > /etc/vconsole.conf''')
     os.system("cd")
     input("Press Enter to continue ")
-os.system("clear")
+clear()
 parallel=input("Enable parallel downloads?(Y/n):")
 if parallel.lower()!="n":
     parallel_num = int(input("Enter the number of parallel downloads to be enabled(2-10):"))
@@ -47,20 +164,20 @@ if parallel.lower()!="n":
         parallel_num = 2
     os.system('echo "[options]" >> /etc/pacman.conf')
     os.system('echo "ParallelDownloads='+str(parallel_num)+'" >> /etc/pacman.conf')
-os.system("clear")
+clear()
 print("Installing Reflector to update the mirror list...")
 os.system("pacman -S reflector")
 os.system("sudo systemctl enable reflector.service reflector.timer")
-os.system("clear")
+clear()
 print("\nUpdating mirror list")
 os.system("sudo systemctl start reflector.service reflector.timer")
-os.system("clear")
+clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
 zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
 networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
 pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
-print("Installing necessary/basic programs and dependencies\n")
+print("\nInstalling necessary/basic programs and dependencies\n")
 print("The following programs will be installed:\n"+basic_programs+"\n")
 while True:    
     os.system('pacman -S --needed '+basic_programs)
@@ -82,9 +199,9 @@ while True:
         break
     else:
         print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
-os.system("clear")
+clear()
 os.system("systemctl enable sshd cronie NetworkManager")
-os.system("clear")
+clear()
 print("GRUB Configuration...\n")
 ans = input("Enter the name of the boot partition:")
 os.system("pacman -S --needed efibootmgr")
@@ -94,10 +211,10 @@ os.system("grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory
 os.system("mkdir /boot/grub")
 os.system("grub-mkconfig -o /boot/grub/grub.cfg")
 input("Press Enter to continue ")
-os.system("clear")
+clear()
 print("Set the root password")
 os.system("passwd root")
-os.system("clear")
+clear()
 user_list = []
 while True:
     account_name=input("\nEnter the user account name(Leave blank to continue):")
@@ -110,7 +227,7 @@ while True:
     if ans.lower()!="n":
         os.system('echo "'+account_name+' ALL= (ALL)ALL" >> /etc/sudoers')
     user_list.append(account_name)
-os.system("clear")
+clear()
 aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Do you want to install an AUR helper?(Y/n):")
 if ans.lower() != "n":
@@ -125,7 +242,7 @@ if ans.lower() != "n":
             for x in user_list:
                 print(str(y)+")"+x)
                 y+=1
-            aur_account = input("Enter the account name to be used(Requires sudo previlages):")
+            aur_account = input("Enter the account name to be used(Requires users with sudo previlages):")
             if aur_account in user_list:
                 print("Using user account '"+aur_account+"'")
                 break
@@ -147,8 +264,11 @@ if ans.lower() != "n":
         else:
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
         y=1
+clear()
+de_wm()
+video_drivers()
 while True:
-    a = input("Custom command to be executed(Leave blank to skip): ")
+    a = input("Enter custom command to be executed(Leave blank to skip): ")
     if a == "":
         break
     os.system(a)
