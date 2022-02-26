@@ -76,6 +76,8 @@ def de_wm():
                 return
             else:
                 print("\nInvalid Input!\n")
+        else:
+            break
 
 def open_video():
     clear()
@@ -134,7 +136,7 @@ def xorg_input():
         input_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
         if input_ans == "":
             return
-        for x in xor_input_list:
+        for x in xorg_input_list:
             if input_ans.lower() in x:
                 install(x[1])
                 return xorg_input()        
@@ -168,7 +170,28 @@ Note:Open source Nvidia drivers are also listed(Under Open Source option) but in
             clear()
             print("\nInvalid Input!(Leave the input blank to cancel)\n")
 
-
+def login():
+    clear()
+    login_list   = [["1","gdm"],
+                    ["2","lighdm"],
+                    ["3","lxdm"],
+                    ["4","sddm"]]
+    ans=input("Install a Login/Display Manager?(Y/n):")
+    if ans.lower() == "n":
+        return
+    while True:
+        print("List of Display Managers:")
+        for x in login_list:
+            print("   "+x[0]+")"+x[1])
+        login_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        if login_ans == "":
+            return
+        for x in login_list:
+            if login_ans.lower() in x:
+                install(x[1])
+                return login()        
+        clear()
+        print("\nInvalid Input!\n")
 
 clear()
 print("Configuration and setup...")
@@ -281,7 +304,7 @@ while True:
     user_list.append(account_name)
 clear()
 aur_list=["yay","paru","trizen","aura","none"]
-ans=input("Do you want to install an AUR helper?(Y/n):")
+ans=input("Install an AUR helper?(Y/n):")
 if ans.lower() != "n":
     y=1
     print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts will be used")
@@ -319,6 +342,7 @@ if ans.lower() != "n":
 clear()
 de_wm()
 drivers()
+login()
 while True:
     a = input("Enter custom command to be executed(Leave blank to skip): ")
     if a == "":
