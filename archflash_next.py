@@ -19,14 +19,15 @@ def wm():
             for y in x[1:]:
                 print("    ",y)
             print()
-        wm_ans = input("Enter the name of the WM(Ex:openbox or i3): ")
+        wm_ans = input("Enter the name of the WM(Leave the input blank to cancel): ")
         if wm_ans == "":
             return
         for x in wm_list:
             if wm_ans.lower() in x:
-                    return install(wm_ans.lower())
+                    install(wm_ans.lower())
+                    return wm()
         clear()
-        print("\nInvalid Input!(Leave the input blank to cancel)\n")
+        print("\nInvalid Input!\n")
 
 
 def de():
@@ -46,51 +47,102 @@ def de():
             for y in x[1:]:
                 print("    ",y[0],y[1])
             print()
-        de_ans = input("Enter the name of the DE(Ex:gnome or plasma): ")
+        de_ans = input("Enter the name of the DE(Leave the input blank to cancel): ")
         if de_ans == "":
             return
         for x in de_list:
             for y in x[1:]:
                 if de_ans.lower() in y:
                     install(y[0])
-                    return
+                    return de()
         clear()
-        print("\nInvalid Input!(Leave the input blank to cancel)\n")
+        print("\nInvalid Input!\n")
 
 
 def de_wm():
+    clear()
     ans=input("Install a Desktop Environment/Window Manager?(Y/n):")
     while True:
         if ans.lower() != "n":
             print('''Select one of the options:
                 1)DE (Desktop Environment)
                 2)WM (Window Manager)''')
-            de_or_wm=input("Enter the option(de/wm): ")
-            if "de" in de_or_wm.lower():
-                return de()
-            elif "wm" in de_or_wm.lower():
-                return wm()
+            de_or_wm=input("Enter the option(Leave the input blank to cancel): ")
+            if ("de" in de_or_wm.lower()) or ("1" in de_or_wm.lower()):
+                de()
+            elif ("wm" in de_or_wm.lower()) or ("2" in de_or_wm.lower()):
+                wm()
             elif de_or_wm == "":
                 return
             else:
-                print("\nInvalid Input!(Leave the input blank to cancel)\n")
+                print("\nInvalid Input!\n")
 
 def open_video():
     clear()
-    driver_list =  [["xf86-video-amdgpu","AMD"],
-                    ["xf86-video-intel","Intel"],
-                    ["xf86-video-ati","ATI"],
-                    ["xf86-video-nouveau","Nvidia(Nouveau)"]]
+    open_driver_list =     [["1","xf86-video-amdgpu","amd"],
+                            ["2","xf86-video-intel","intel"],
+                            ["3","xf86-video-ati","ati"],
+                            ["4","xf86-video-nouveau","nvidia"],
+                            ["5","xf86-video-dummy","dummy"],
+                            ["6","xf86-video-fbdev","frame buffer"],
+                            ["7","xf86-video-vesa","vesa"],
+                            ["8","xf86-video-voodoo","voodoo"]]
+    while True:
+        print("List of Open Source video driver:")
+        for x in open_driver_list:
+            print(x[0]+")"+x[1]+" ("+x[2].upper()+")")
+        driver_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        if driver_ans == "":
+            return
+        for x in open_driver_list:
+            if driver_ans.lower() in x:
+                install(x[1])
+                return open_video()        
+        clear()
+        print("\nInvalid Input!\n")
+
 
 
 def closed_video():
-    pass
+    clear()
+    closed_driver_list  =  [["1","nvidia","nvidia"]]
+    while True:
+        print("List of Closed Source video driver:")
+        for x in closed_driver_list:
+            print(x[0]+")"+x[1]+" ("+x[2].upper()+")")
+        driver_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        if driver_ans == "":
+            return
+        for x in closed_driver_list:
+            if driver_ans.lower() in x:
+                install(x[1])
+                return closed_video()        
+        clear()
+        print("\nInvalid Input!\n")
 
-def xorg_video():
-    pass
+def xorg_input():
+    clear()
+    xorg_input_list  = [["1","xf86-input-evdev","evdev input driver"],
+                        ["2","xf86-input-libinput","Generic input driver for the Xorg server based on libinput"],
+                        ["3","xf86-input-synaptics","Synaptics driver for notebook touchpads"],
+                        ["4","xf86-input-vmmouse","VMWare mouse input driver"],
+                        ["5","xf86-input-void","void input driver"]]
+    while True:
+        print("List of Xorg input driver:")
+        for x in xorg_input_list:
+            print(x[0]+")"+x[1]+" ("+x[2].capitalize()+")")
+        input_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        if input_ans == "":
+            return
+        for x in xor_input_list:
+            if input_ans.lower() in x:
+                install(x[1])
+                return xorg_input()        
+        clear()
+        print("\nInvalid Input!\n")
 
 
-def video_drivers():
+def drivers():
     clear()
     ans=input("Install video drivers?(Y/n):")
     if ans.lower() == "n":
@@ -103,13 +155,13 @@ def video_drivers():
 
 Note:Open source Nvidia drivers are also listed(Under Open Source option) but installing it is depreciated
      Drivers available in the AUR needs to be installed manually\n""")
-        video_type = input("Enter the option number (1/2):")
+        video_type = input("Enter the option number (1/2/3):")
         if video_type == "1":
             open_video()
         elif video_type == "2":
             closed_video()
         elif video_type == "3":
-            xorg_video()
+            xorg_input()
         elif video_type == "":
             return
         else:
@@ -266,7 +318,7 @@ if ans.lower() != "n":
         y=1
 clear()
 de_wm()
-video_drivers()
+drivers()
 while True:
     a = input("Enter custom command to be executed(Leave blank to skip): ")
     if a == "":
