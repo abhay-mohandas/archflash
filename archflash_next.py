@@ -173,7 +173,7 @@ Note:Open source Nvidia drivers are also listed(Under Open Source option) but in
 def login():
     clear()
     login_list   = [["1","gdm"],
-                    ["2","lighdm"],
+                    ["2","lightdm","lightdm-gtk-greeter"],
                     ["3","lxdm"],
                     ["4","sddm"]]
     ans=input("Install a Login/Display Manager?(Y/n):")
@@ -189,7 +189,10 @@ def login():
         for x in login_list:
             if login_ans.lower() in x:
                 install(x[1])
-                return login()        
+                os.system("systemctl enable "+x[1]+".service")
+                if x[1] == "lightdm":
+                    install(x[2])
+                return        
         clear()
         print("\nInvalid Input!\n")
 
@@ -219,9 +222,9 @@ clear()
 print("The default keyboard layout is QWERTY/US")
 ans=input("Change the keyboard layout?(Y/n)")
 if ans.lower()!="n":
-    print("Select a keyboard layout from the list(Showing only the most common ones)")
+    print("Select a keyboard layout from the list(Showing only the most common ones)\n")
     os.system("ls /usr/share/kbd/keymaps/i386")
-    key = input("Enter the keyboard standard(QWERTY/DVORAK/etc):")
+    key = input("\nEnter the keyboard standard(QWERTY/DVORAK/etc):")
     print("\nNote: press q to exit the list")
     input("\nPress Enter to show the list ")
     os.system("ls /usr/share/kbd/keymaps/i386/**/*.map.gz | grep "+key.lower()+" | less")
