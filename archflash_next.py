@@ -242,10 +242,9 @@ if parallel.lower()!="n":
 clear()
 print("Installing Reflector to update the mirror list...")
 os.system("pacman -S reflector")
-os.system("sudo systemctl enable reflector.service reflector.timer")
-clear()
+os.system("sudo systemctl enable reflector.service")
 print("\nUpdating mirror list")
-os.system("sudo systemctl start reflector.service reflector.timer")
+os.system("sudo systemctl start reflector.service")
 clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
 zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
