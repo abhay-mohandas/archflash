@@ -6,6 +6,9 @@ def clear():
 def install(packages):
     os.system("pacman -S --needed "+packages)
 
+def invalid():
+    print("\033[31m Invalid input! Try again...\033[0m\n")
+
 
 def wm():
     clear()
@@ -27,7 +30,7 @@ def wm():
                     install(wm_ans.lower())
                     return wm()
         clear()
-        print("\nInvalid Input!\n")
+        invalid()
 
 
 def de():
@@ -56,7 +59,7 @@ def de():
                     install(y[0])
                     return de()
         clear()
-        print("\nInvalid Input!\n")
+        invalid()
 
 
 def de_wm():
@@ -75,7 +78,7 @@ def de_wm():
             elif de_or_wm == "":
                 return
             else:
-                print("\nInvalid Input!\n")
+                invalid()
         else:
             break
 
@@ -101,7 +104,7 @@ def open_video():
                 install(x[1])
                 return open_video()        
         clear()
-        print("\nInvalid Input!\n")
+        invalid()
 
 
 
@@ -120,7 +123,7 @@ def closed_video():
                 install(x[1])
                 return closed_video()        
         clear()
-        print("\nInvalid Input!\n")
+        invalid()
 
 def xorg_input():
     clear()
@@ -141,7 +144,7 @@ def xorg_input():
                 install(x[1])
                 return xorg_input()        
         clear()
-        print("\nInvalid Input!\n")
+        invalid()
 
 
 def drivers():
@@ -194,7 +197,31 @@ def login():
                     install(x[2])
                 return        
         clear()
-        print("\nInvalid Input!\n")
+        invalid()
+
+
+def terminal():
+    terminal_list= [["1","alacritty"],
+                    ["2","kitty"],
+                    ["3","konsole"],
+                    ["4","terminator"],
+                    ["5","xterm"],
+                    ["6","xfce4-terminal"],
+                    ["7","tmux"]]
+    while True:
+        print("List of Terminal Emulators:")
+        for x in terminal_list:
+            print(x[0]+")"+x[1])
+        t_ans = input("Enter the name/number of the terminal(Leave the input blank to cancel): ")
+        if t_ans == "":
+            return
+        for x in terminal_list:
+            if t_ans.lower() in x:
+                install(x[1])
+                return
+        clear()
+        invalid()
+
 
 clear()
 print("Configuration and setup...")
@@ -250,7 +277,7 @@ print("\nUpdating mirror list")
 os.system("sudo systemctl start reflector.service")
 clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
-zip unzip p7zip unrar lzop rsync traceroute bind-tools linux linux-headers \
+zip unzip p7zip unrar lzop rsync traceroute e2fsprogs bind-tools linux linux-headers \
 networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
 pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
@@ -258,7 +285,7 @@ print("\nInstalling necessary/basic programs and dependencies\n")
 print("The following programs will be installed:\n"+basic_programs+"\n")
 while True:    
     os.system('pacman -S --needed '+basic_programs)
-    ans=input("\nWas the above programs installed successfully?(Y/n):")
+    ans=input("\nDid the above programs installed successfully?(Y/n):")
     if ans.lower() != "n":
         break
     print("Retrying installation...")
@@ -309,22 +336,18 @@ aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Install an AUR helper?(Y/n):")
 if ans.lower() != "n":
     y=1
-    print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts will be used")
-    if len(user_list) <= 1:
-        aur_account = user_list[0]
-        print("Using user account '"+aur_account+"'")
-    else:
-        while True:
-            print("Multiple user accounts found:")
-            for x in user_list:
-                print(str(y)+")"+x)
-                y+=1
-            aur_account = input("Enter the account name to be used(Requires users with sudo previlages):")
-            if aur_account in user_list:
-                print("Using user account '"+aur_account+"'")
-                break
-            print("Invalid Input! Try again")
-            y=1
+    print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts will be used\n")
+    while True:
+        print("List of users:")
+        for x in user_list:
+            print(str(y)+")"+x)
+            y+=1
+        aur_account = input("\nEnter the user name to be used(Requires users with sudo previlages):")
+        if aur_account in user_list:
+            print("Using user account '"+aur_account+"'")
+            break
+        print("Invalid Input! Try again")
+        y=1
     y=1
     while True:
         print("List of AUR helpers:")
@@ -342,11 +365,15 @@ if ans.lower() != "n":
             print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
         y=1
 clear()
-de_wm()
-drivers()
-login()
-while True:
-    a = input("Enter custom command to be executed(Leave blank to skip): ")
-    if a == "":
-        break
-    os.system(a)
+print("Base installation is complete!")
+ans=input("Install GUI,Drivers and Terminal Emulators?(Y/n):")
+if ans.lower() != "n":
+    de_wm()
+    login()
+    drivers()
+    terminal()
+    while True:
+        a = input("Enter custom command to be executed(Leave blank to skip): ")
+        if a == "":
+            break
+        os.system(a)
