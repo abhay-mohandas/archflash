@@ -1,4 +1,6 @@
 import os
+import time
+
 
 os.system('clear')
 print('''\033[31m
@@ -76,7 +78,11 @@ if root != "":
     os.system("mount /dev/"+root+" /mnt")
 
 print("\nBuilding the base system\n")
-os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano less grep")
+while True:
+    os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano less grep")
+    ans=input("\nDid the above programs installed successfully?(Y/n):")
+    if ans.lower() != "n":
+        break
 os.system("genfstab -U -p /mnt >> /mnt/etc/fstab")
 os.system("cp /root/archflash/archflash_next.py /mnt")
 os.system("arch-chroot /mnt/ python archflash_next.py")
@@ -84,7 +90,8 @@ os.system("clear")
 print("Installation Complete!\n")
 ans = input("Reboot the system?(Y/n):")
 if ans.lower() != "n":
+    print("Rebooting in 5 seconds")
+    time.sleep(5)
     os.system('reboot')
 else:
     os.system("clear")
-    
