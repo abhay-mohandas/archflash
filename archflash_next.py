@@ -64,8 +64,9 @@ def de():
 
 def de_wm():
     clear()
-    ans=input("Install a Desktop Environment/Window Manager?(Y/n):")
+    ans=input("Install a Desktop Environment/Window Manager?[Y/n]:")
     while True:
+        clear()
         if ans.lower() != "n":
             print('''Select one of the options:
                 1)DE (Desktop Environment)
@@ -96,7 +97,7 @@ def open_video():
         print("List of Open Source video driver:")
         for x in open_driver_list:
             print(x[0]+")"+x[1]+" ("+x[2].upper()+")")
-        driver_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        driver_ans = input("Enter option name/number(Leave the input blank to cancel): ")
         if driver_ans == "":
             return
         for x in open_driver_list:
@@ -115,7 +116,7 @@ def closed_video():
         print("List of Closed Source video driver:")
         for x in closed_driver_list:
             print(x[0]+")"+x[1]+" ("+x[2].upper()+")")
-        driver_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        driver_ans = input("Enter the option name/number(Leave the input blank to cancel): ")
         if driver_ans == "":
             return
         for x in closed_driver_list:
@@ -136,7 +137,7 @@ def xorg_input():
         print("List of Xorg input driver:")
         for x in xorg_input_list:
             print(x[0]+")"+x[1]+" ("+x[2].capitalize()+")")
-        input_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        input_ans = input("Enter the option name/number(Leave the input blank to cancel): ")
         if input_ans == "":
             return
         for x in xorg_input_list:
@@ -149,7 +150,7 @@ def xorg_input():
 
 def drivers():
     clear()
-    ans=input("Install video drivers?(Y/n):")
+    ans=input("Install video drivers?[Y/n]:")
     if ans.lower() == "n":
         return
     while True:
@@ -179,14 +180,14 @@ def login():
                     ["2","lightdm","lightdm-gtk-greeter"],
                     ["3","lxdm"],
                     ["4","sddm"]]
-    ans=input("Install a Login/Display Manager?(Y/n):")
+    ans=input("Install a Login/Display Manager?[Y/n]:")
     if ans.lower() == "n":
         return
     while True:
         print("List of Display Managers:")
         for x in login_list:
             print("   "+x[0]+")"+x[1])
-        login_ans = input("Enter the name/number of the option(Leave the input blank to cancel): ")
+        login_ans = input("Enter the option name/number(Leave the input blank to cancel): ")
         if login_ans == "":
             return
         for x in login_list:
@@ -212,12 +213,34 @@ def terminal():
         print("List of Terminal Emulators:")
         for x in terminal_list:
             print(x[0]+")"+x[1])
-        t_ans = input("Enter the name/number of the terminal(Leave the input blank to cancel): ")
+        t_ans = input("Enter the name/number(Leave the input blank to cancel): ")
         if t_ans == "":
             return
         for x in terminal_list:
             if t_ans.lower() in x:
                 install(x[1])
+                return
+        clear()
+        invalid()
+
+
+def kernel():
+    clear()
+    kernel_list  = [["1","linux","linux-headers"],
+                    ["2","linux-lts","linux-lts-headers"],
+                    ["3","linux-zen","linux-zen-headers"],
+                    ["4","linux-hardened","linux-hardened-headers"]]
+    ans=input("Install additional kernels?[Y/n]:")
+    if ans.lower() == "n":
+        return
+    while True:
+        print("List of available kernel:")
+        for x in kernel_list:
+            print(x[0]+")"+x[1])
+        kernel_ans=input("Enter the option name/number(Leave the input blank to cancel):")
+        for x in kernel_list:
+            if kernel_ans.lower() in x:
+                install(x[1]+" "+x[2])
                 return
         clear()
         invalid()
@@ -230,7 +253,7 @@ zone_dir=['Africa','America','Antartica','Arctic','Asia','Atlantic','Australia',
 os.system("ls /usr/share/zoneinfo")
 region=input("Enter the location region(Ex:Asia/Europe/America):")
 clear()
-if region.capitalize() in zone_dir or region.upper()=="US":
+if (region.capitalize() in zone_dir) or (region.upper()=="US"):
     os.system("ls /usr/share/zoneinfo/"+region.capitalize())
     city=input("Enter the city name from the list(Ex:Kolkata/London/Phoenix):")
     os.system("ln -sf /usr/share/zoneinfo/"+region.capitalize()+"/"+city.capitalize()+" /etc/localtime")
@@ -246,13 +269,13 @@ clear()
 pc_name=input("Enter the name of the computer:")
 os.system('''echo "'''+ pc_name +'''" > /etc/hostname''')
 clear()
-print("The default keyboard layout is QWERTY/US")
-ans=input("Change the keyboard layout?(Y/n)")
+print("The default keyboard layout is QWERTY-US")
+ans=input("Change the keyboard layout?[Y/n]")
 if ans.lower()!="n":
-    print("Select a keyboard layout from the list(Showing only the most common ones)\n")
+    print("List of keyboard layouts(Showing only the most common ones):\n")
     os.system("ls /usr/share/kbd/keymaps/i386")
-    key = input("\nEnter the keyboard standard(QWERTY/DVORAK/etc):")
-    print("\nNote: press q to exit the list")
+    key = input("\nEnter the name of keyboard standard(qwerty/dvorak/etc):")
+    print("\nNote: press q to exit the list and use arrow keys to navigate")
     input("\nPress Enter to show the list ")
     os.system("ls /usr/share/kbd/keymaps/i386/**/*.map.gz | grep "+key.lower()+" | less")
     keymap = input("Enter the layout name (Exclude the .map.gz extention)(Ex:us/uk/etc):")
@@ -260,7 +283,7 @@ if ans.lower()!="n":
     os.system("cd")
     input("Press Enter to continue ")
 clear()
-parallel=input("Enable parallel downloads?(Y/n):")
+parallel=input("Enable parallel downloads?[Y/n]:")
 if parallel.lower()!="n":
     parallel_num = int(input("Enter the number of parallel downloads to be enabled(2-10):"))
     if parallel_num > 10:
@@ -285,11 +308,11 @@ print("\nInstalling necessary/basic programs and dependencies\n")
 print("The following programs will be installed:\n"+basic_programs+"\n")
 while True:    
     os.system('pacman -S --needed '+basic_programs)
-    ans=input("\nDid the above programs installed successfully?(Y/n):")
+    ans=input("\nDid the above programs installed successfully?[Y/n]:")
     if ans.lower() != "n":
         break
     print("Retrying installation...")
-ans=input("Install additional software?(Y/n):")
+ans=input("Install additional software?[Y/n]:")
 if ans.lower() != "n":
     soft_list=input("Enter the package name to be installed(separate by space for multiple packages):")
     os.system("pacman -S "+soft_list)
@@ -327,13 +350,13 @@ while True:
     os.system("useradd -m "+account_name)
     print("Set the password for user account "+account_name)
     os.system("passwd "+account_name)
-    ans=input("\nAdd user "+account_name+" to sudoers file?(Y/n):")
+    ans=input("\nAdd user "+account_name+" to sudoers file?[Y/n]:")
     if ans.lower()!="n":
         os.system('echo "'+account_name+' ALL= (ALL)ALL" >> /etc/sudoers')
     user_list.append(account_name)
 clear()
 aur_list=["yay","paru","trizen","aura","none"]
-ans=input("Install an AUR helper?(Y/n):")
+ans=input("Install an AUR helper?[Y/n]:")
 if ans.lower() != "n":
     y=1
     print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts will be used\n")
@@ -366,12 +389,13 @@ if ans.lower() != "n":
         y=1
 clear()
 print("Base installation is complete!")
-ans=input("Install GUI,Drivers and Terminal Emulators?(Y/n):")
+ans=input("Install GUI,Drivers,Terminal Emulators and other Programs?[Y/n]:")
 if ans.lower() != "n":
     de_wm()
     login()
     drivers()
     terminal()
+    kernel()
     while True:
         a = input("Enter custom command to be executed(Leave blank to skip): ")
         if a == "":
