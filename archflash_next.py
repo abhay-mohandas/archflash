@@ -150,7 +150,7 @@ def xorg_input():
 
 def drivers():
     clear()
-    ans=input("Install video drivers?[Y/n]:")
+    ans=input("Install video/input drivers?[Y/n]:")
     if ans.lower() == "n":
         return
     while True:
@@ -295,12 +295,10 @@ if parallel.lower()!="n":
 clear()
 print("Installing Reflector to update the mirror list...")
 os.system("pacman -S reflector")
-os.system("sudo systemctl enable reflector.service")
-print("\nUpdating mirror list")
-os.system("sudo systemctl start reflector.service")
+os.system("systemctl enable reflector.service")
 clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
-zip unzip p7zip unrar lzop rsync traceroute e2fsprogs bind-tools linux linux-headers \
+zip unzip p7zip unrar lzop rsync gnu-free-fonts traceroute e2fsprogs bind-tools linux linux-headers \
 networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
 pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
@@ -330,7 +328,11 @@ clear()
 os.system("systemctl enable sshd cronie NetworkManager")
 clear()
 print("GRUB Configuration...\n")
-ans = input("Enter the name of the boot partition:")
+try:
+    boot = open("archflash/memfile","r")
+    ans = boot.read()
+except:
+    ans = input("Enter the name of the boot partition:")
 os.system("pacman -S --needed efibootmgr")
 os.system("mkdir /boot/efi")
 os.system("mount /dev/"+ans+" /boot/efi")
