@@ -2,9 +2,8 @@
 A simple installer for Arch Linux written in python
 (Still in testing. So it might fail in some systems)
 
-
-
 Instructions:
+
 
 Step 1:
 
