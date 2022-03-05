@@ -7,14 +7,14 @@ Instructions:
 
 Step 1:
 
-            git clone https://github.com/abhay-mohandas/archflash
+     git clone https://github.com/abhay-mohandas/archflash
    
 Step 2:
 
-            cd archflash
+     cd archflash
 
 Step 3:
 
-            python archflash.py
+     python archflash.py
   
   
