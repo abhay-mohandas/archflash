@@ -9,7 +9,6 @@ def install(packages):
 def invalid():
     print("\033[31m Invalid input! Try again...\033[0m\n")
 
-
 def wm():
     clear()
     wm_list =  [["Stacking","fluxbox","openbox"],
@@ -31,7 +30,6 @@ def wm():
                     return wm()
         clear()
         invalid()
-
 
 def de():
     clear()
@@ -61,12 +59,10 @@ def de():
         clear()
         invalid()
 
-
 def de_wm():
     clear()
     ans=input("Install a Desktop Environment/Window Manager?[Y/n]:")
     while True:
-        clear()
         if ans.lower() != "n":
             print('''Select one of the options:
                 1)DE (Desktop Environment)
@@ -74,8 +70,10 @@ def de_wm():
             de_or_wm=input("Enter the option(Leave the input blank to cancel): ")
             if ("de" in de_or_wm.lower()) or ("1" in de_or_wm.lower()):
                 de()
+                clear()
             elif ("wm" in de_or_wm.lower()) or ("2" in de_or_wm.lower()):
                 wm()
+                clear()
             elif de_or_wm == "":
                 return
             else:
@@ -106,8 +104,6 @@ def open_video():
                 return open_video()        
         clear()
         invalid()
-
-
 
 def closed_video():
     clear()
@@ -147,7 +143,6 @@ def xorg_input():
         clear()
         invalid()
 
-
 def drivers():
     clear()
     ans=input("Install video/input drivers?[Y/n]:")
@@ -180,9 +175,6 @@ def login():
                     ["2","lightdm","lightdm-gtk-greeter"],
                     ["3","lxdm"],
                     ["4","sddm"]]
-    ans=input("Install a Login/Display Manager?[Y/n]:")
-    if ans.lower() == "n":
-        return
     while True:
         print("List of Display Managers:")
         for x in login_list:
@@ -196,12 +188,11 @@ def login():
                 os.system("systemctl enable "+x[1]+".service")
                 if x[1] == "lightdm":
                     install(x[2])
-                return        
         clear()
         invalid()
 
-
 def terminal():
+    clear()
     terminal_list= [["1","alacritty"],
                     ["2","kitty"],
                     ["3","konsole"],
@@ -219,7 +210,6 @@ def terminal():
         for x in terminal_list:
             if t_ans.lower() in x:
                 install(x[1])
-                return
         clear()
         invalid()
 
@@ -238,6 +228,8 @@ def kernel():
         for x in kernel_list:
             print(x[0]+")"+x[1])
         kernel_ans=input("Enter the option name/number(Leave the input blank to cancel):")
+        if kernel_ans == "":
+            return
         for x in kernel_list:
             if kernel_ans.lower() in x:
                 install(x[1]+" "+x[2])
@@ -328,12 +320,8 @@ clear()
 os.system("systemctl enable sshd cronie NetworkManager")
 clear()
 print("GRUB Configuration...\n")
-try:
-    boot = open("archflash/memfile","r")
-    ans = boot.read()
-except:
-    ans = input("Enter the name of the boot partition:")
-os.system("pacman -S --needed efibootmgr")
+os.system("lsblk")
+ans = input("Enter the name of the boot partition to set up grub:")
 os.system("mkdir /boot/efi")
 os.system("mount /dev/"+ans+" /boot/efi")
 os.system("grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi")
@@ -403,3 +391,4 @@ if ans.lower() != "n":
         if a == "":
             break
         os.system(a)
+os.system("rm archflash_next.py")
