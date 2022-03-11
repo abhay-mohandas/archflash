@@ -30,10 +30,10 @@ print("""Running Archflash Installation...
 
 """)
 os.system("timedatectl set-ntp true")
-print("Listing connected devices and available RAM")
+print("Listing connected drives and available RAM:\n")
 print("Devices and their partitions:\n")
 os.system("lsblk")
-print("\nRAM installed:\n")
+print("\n\nRAM installed:\n")
 os.system("lsmem | grep Total")
 temp=input("\nContinue?(Y/n):")
 if temp.lower()=="n":
@@ -62,15 +62,15 @@ Partitioning will be done manually in cfdisk.
 print("\033[31m Caution! This program(at the moment) does not support separate /home partition\033[0m \n")
 while True:
     os.system("lsblk")
-    ans = input("Enter the drive name(Ex:sda):")
+    ans = input("\nEnter the drive name(Ex:sda):")
     if ans == '':
         invalid()
         continue
     try:
         open("/dev/"+ans)
+        break
     except:
         invalid()
-    break
 input("\nEnter to continue")
 os.system("cfdisk /dev/"+ans)
 while True:
@@ -87,8 +87,6 @@ while True:
         os.system("mkfs.fat -F 32 /dev/"+boot)
         os.system("mkdir /mnt/boot")
         os.system("mount /dev/"+boot+" /mnt/boot")
-        file_boot = open("archflash/memfile","w")
-        file_boot.write(boot)
         break
 while True:
     clear()
@@ -126,9 +124,8 @@ while True:
     if ans.lower() != "n":
         break
 os.system("genfstab -U -p /mnt >> /mnt/etc/fstab")
-os.system("cp -r /root/archflash /mnt")
-os.system("arch-chroot /mnt/ python archflash/archflash_next.py")
-os.system("arch-chroot /mnt/ rm -rf archflash")
+os.system("cp archflash_next.py /mnt")
+os.system("arch-chroot /mnt/ python archflash_next.py")
 clear()
 print("***Installation Complete!***\n\n")
 ans = input("Reboot the system?(Y/n):")
