@@ -61,25 +61,21 @@ def de():
 
 def de_wm():
     clear()
-    ans=input("Install a Desktop Environment/Window Manager?[Y/n]:")
+    dewm_list= [["1","de",de()],
+                ["2","wm",wm()]]
     while True:
-        if ans.lower() != "n":
-            print('''Select one of the options:
-                1)DE (Desktop Environment)
-                2)WM (Window Manager)''')
-            de_or_wm=input("Enter the option(Leave the input blank to cancel): ")
-            if ("de" in de_or_wm.lower()) or ("1" in de_or_wm.lower()):
-                de()
-                clear()
-            elif ("wm" in de_or_wm.lower()) or ("2" in de_or_wm.lower()):
-                wm()
-                clear()
-            elif de_or_wm == "":
-                return
-            else:
-                invalid()
-        else:
-            break
+        print('''Select one of the options:
+            1)DE (Desktop Environment)
+            2)WM (Window Manager)''')
+        de_or_wm=input("Enter the option name/number(Leave the input blank to cancel): ")
+        if not(de_or_wm):
+            return
+        for x in dewm_list:
+            if de_or_wm.lower in x:
+                x[2]
+                return de_wm()
+        clear()
+        invalid()
 
 def open_video():
     clear()
@@ -145,29 +141,26 @@ def xorg_input():
 
 def drivers():
     clear()
-    ans=input("Install video/input drivers?[Y/n]:")
-    if ans.lower() == "n":
-        return
+    driver_list  = [["1",open_video()],
+                    ["2",closed_video()],
+                    ["3",xorg_input()]]
     while True:
         print("""List of types of video driver to install:
-    1) Open Source video driver (AMD,ATI,Intel,Other Xorg video drivers) 
-    2) Closed Source video driver(Nvidia)
+    1) Open Source video driver (Ex:AMD,ATI,Intel,Other Xorg video drivers) 
+    2) Closed Source video driver(Ex:Nvidia)
     3) Xorg input drivers (Ex:libinput)
 
 Note:Open source Nvidia drivers are also listed(Under Open Source option) but installing it is depreciated
      Drivers available in the AUR needs to be installed manually\n""")
-        video_type = input("Enter the option number (1/2/3):")
-        if video_type == "1":
-            open_video()
-        elif video_type == "2":
-            closed_video()
-        elif video_type == "3":
-            xorg_input()
-        elif video_type == "":
+        video_type = input("Enter the option number(Leave blank to cancel)[1/2/3]:")
+        if not(video_type):
             return
-        else:
-            clear()
-            print("\nInvalid Input!(Leave the input blank to cancel)\n")
+        for x in driver_list:
+            if video_type == x[0]:
+                x[1]
+                return drivers()
+        clear()
+        invalid()
 
 def login():
     clear()
@@ -180,7 +173,7 @@ def login():
         for x in login_list:
             print("   "+x[0]+")"+x[1])
         login_ans = input("Enter the option name/number(Leave the input blank to cancel): ")
-        if login_ans == "":
+        if not(login_ans):
             return
         for x in login_list:
             if login_ans.lower() in x:
@@ -205,11 +198,12 @@ def terminal():
         for x in terminal_list:
             print(x[0]+")"+x[1])
         t_ans = input("Enter the name/number(Leave the input blank to cancel): ")
-        if t_ans == "":
+        if not(t_ans):
             return
         for x in terminal_list:
             if t_ans.lower() in x:
                 install(x[1])
+                return terminal()
         clear()
         invalid()
 
@@ -220,9 +214,6 @@ def kernel():
                     ["2","linux-lts","linux-lts-headers"],
                     ["3","linux-zen","linux-zen-headers"],
                     ["4","linux-hardened","linux-hardened-headers"]]
-    ans=input("Install additional kernels?[Y/n]:")
-    if ans.lower() == "n":
-        return
     while True:
         print("List of available kernel:")
         for x in kernel_list:
@@ -233,10 +224,9 @@ def kernel():
         for x in kernel_list:
             if kernel_ans.lower() in x:
                 install(x[1]+" "+x[2])
-                return
+                return kernel()
         clear()
         invalid()
-
 
 clear()
 print("Configuration and setup...")
@@ -315,7 +305,8 @@ while True:
         os.system("pacman -S --needed "+vendor.lower()+"-ucode")
         break
     else:
-        print("Invalid Option! Try again...(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
+        invalid()
+        print("(If your processor vendor is other than AMD and Intel, Enter 'other' as the vendor name)")
 clear()
 os.system("systemctl enable sshd cronie NetworkManager")
 clear()
@@ -344,25 +335,31 @@ while True:
     if ans.lower()!="n":
         os.system('echo "'+account_name+' ALL= (ALL)ALL" >> /etc/sudoers')
     user_list.append(account_name)
+user_list.append("none")
 clear()
 aur_list=["yay","paru","trizen","aura","none"]
 ans=input("Install an AUR helper?[Y/n]:")
 if ans.lower() != "n":
     y=1
-    print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts will be used\n")
+    print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts with sudo previlages will be used\n")
     while True:
         print("List of users:")
         for x in user_list:
             print(str(y)+")"+x)
             y+=1
         aur_account = input("\nEnter the user name to be used(Requires users with sudo previlages):")
-        if aur_account in user_list:
-            print("Using user account '"+aur_account+"'")
+        if aur_account.lower() in user_list[-1]:
+            condition = False
             break
-        print("Invalid Input! Try again")
+        elif aur_account in user_list:
+            print("Using user account '"+aur_account+"'")
+            condition = True
+            break
+        invalid()
+        print("To cancel, enter 'none' ")
         y=1
     y=1
-    while True:
+    while condition:
         print("List of AUR helpers:")
         for x in aur_list:
             print(str(y)+")"+x)
@@ -375,20 +372,31 @@ if ans.lower() != "n":
             os.system("sudo -u "+aur_account+" -- bash -c 'cd /home/"+aur_account+"/"+aur_helper+" && makepkg -si'")
             break
         else:
-            print("Invalid option! To cancel the AUR helper installation, enter 'none' ")
+            invalid()
+            print("To cancel the AUR helper installation, enter 'none' ")
         y=1
 clear()
 print("Base installation is complete!")
-ans=input("Install GUI,Drivers,Terminal Emulators and other Programs?[Y/n]:")
+ans=input("Install GUI,Drivers and other Programs?[Y/n]:")
 if ans.lower() != "n":
-    de_wm()
-    login()
-    drivers()
-    terminal()
-    kernel()
+    ans=input("Install Desktop Environment/Window Manager?[Y/n]:")
+    if ans.lower() != "n":
+        de_wm()
+    ans=input("Install Display Manager?[Y/n]:")
+    if ans.lower() != "n":
+        login()
+    ans=input("Install video/input drivers?[Y/n]:")
+    if ans.lower() != "n":
+        drivers()
+    ans=input("Install additional terminal emulators?[Y/n]:")
+    if ans.lower() != "n":
+        terminal()
+    ans=input("Install additional kernels?[Y/n]:")
+    if ans.lower() != "n":
+        kernel()
     while True:
         a = input("Enter custom command to be executed(Leave blank to skip): ")
-        if a == "":
+        if not(a):
             break
         os.system(a)
 os.system("rm archflash_next.py")
