@@ -9,7 +9,9 @@ def install(packages):
 def invalid():
     print("\033[31m Invalid input! Try again...\033[0m\n")
 
-def wm():
+def wm(condition=True):
+    if not(condition):
+        return
     clear()
     wm_list =  [["Stacking","fluxbox","openbox"],
                 ["Manual Tiling","bspwm","herbstluftwm","i3"],
@@ -31,7 +33,9 @@ def wm():
         clear()
         invalid()
 
-def de():
+def de(condition=True):
+    if not(condition):
+        return
     clear()
     de_list =  [["Gnome",["gnome","(Standard)"],["gnome-shell","(Minimal)"],["gnome-extra","(Standard with extra packages)"]],
                 ["KDE plasma",["plasma","(Standard)"],["plasma-desktop","(Minimal)"]],
@@ -61,8 +65,8 @@ def de():
 
 def de_wm():
     clear()
-    dewm_list= [["1","de",de()],
-                ["2","wm",wm()]]
+    dewm_list= [["1","de",de(False)],
+                ["2","wm",wm(False)]]
     while True:
         print('''Select one of the options:
             1)DE (Desktop Environment)
@@ -77,7 +81,9 @@ def de_wm():
         clear()
         invalid()
 
-def open_video():
+def open_video(condition=True):
+    if not(condition):
+        return
     clear()
     open_driver_list =     [["1","xf86-video-amdgpu","amd"],
                             ["2","xf86-video-intel","intel"],
@@ -101,7 +107,9 @@ def open_video():
         clear()
         invalid()
 
-def closed_video():
+def closed_video(condition=True):
+    if not(condition):
+        return
     clear()
     closed_driver_list  =  [["1","nvidia","nvidia"]]
     while True:
@@ -118,7 +126,9 @@ def closed_video():
         clear()
         invalid()
 
-def xorg_input():
+def xorg_input(condition=True):
+    if not(condition):
+        return
     clear()
     xorg_input_list  = [["1","xf86-input-evdev","evdev input driver"],
                         ["2","xf86-input-libinput","Generic input driver for the Xorg server based on libinput"],
@@ -292,10 +302,7 @@ while True:
     if ans.lower() != "n":
         break
     print("Retrying installation...")
-ans=input("Install additional software?[Y/n]:")
-if ans.lower() != "n":
-    soft_list=input("Enter the package name to be installed(separate by space for multiple packages):")
-    os.system("pacman -S "+soft_list)
+clear()
 vendor_name=['amd','intel','other']
 while True:
     vendor=str(input("Enter the processor vendor name (AMD/Intel):"))
@@ -378,25 +385,36 @@ if ans.lower() != "n":
 clear()
 print("Base installation is complete!")
 ans=input("Install GUI,Drivers and other Programs?[Y/n]:")
+clear()
 if ans.lower() != "n":
     ans=input("Install Desktop Environment/Window Manager?[Y/n]:")
     if ans.lower() != "n":
         de_wm()
+    clear()
     ans=input("Install Display Manager?[Y/n]:")
     if ans.lower() != "n":
         login()
+    clear()
     ans=input("Install video/input drivers?[Y/n]:")
     if ans.lower() != "n":
         drivers()
+    clear()
     ans=input("Install additional terminal emulators?[Y/n]:")
     if ans.lower() != "n":
         terminal()
+    clear()
     ans=input("Install additional kernels?[Y/n]:")
     if ans.lower() != "n":
         kernel()
-    while True:
-        a = input("Enter custom command to be executed(Leave blank to skip): ")
-        if not(a):
-            break
-        os.system(a)
+    clear()
+    ans=input("Install additional software?[Y/n]:")
+    if ans.lower() != "n":
+        soft_list=input("Enter the package name to be installed(separate by space for multiple packages):")
+        os.system("pacman -S "+soft_list)
+clear()
+while True:
+    a = input("Enter custom command to be executed(Leave blank to skip): ")
+    if not(a):
+        break
+    os.system(a)
 os.system("rm archflash_next.py")
