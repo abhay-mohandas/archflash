@@ -7,8 +7,23 @@ def clear():
 def invalid():
     print("\033[31m Invalid input! Try again...\033[0m")
 
+def file_system():
+    format_list=   [["1","ext4"],
+                    ["2","btrfs"]]
+    while True:
+        print("Listing partition filesystems:")
+        for x in format_list:
+            print(x[0]+")"+x[1])
+        format_ans=input("Enter the option name/number:")
+        for x in format_list:
+            if format_ans.lower() in x:
+                    return x[1] 
+        clear()
+        invalid()
+
 clear()
 print('''\033[31m
+
 !!!  WARNING  !!!
 
 This installer can potentially wipe the drive completely... So backup any data before continuing this program
@@ -73,8 +88,8 @@ while True:
         invalid()
 input("\nEnter to continue")
 os.system("cfdisk /dev/"+ans)
+clear()
 while True:
-    clear()
     print("Enter the partition name(Leave blank if none)")
     os.system("lsblk")
     boot = input("Partition for boot(Ex: sda1):")
@@ -82,14 +97,15 @@ while True:
         try:
             open("/dev/"+boot)
         except:
+            clear()
             invalid()
             continue
         os.system("mkfs.fat -F 32 /dev/"+boot)
         os.system("mkdir /mnt/boot")
         os.system("mount /dev/"+boot+" /mnt/boot")
+        clear()
         break
 while True:
-    clear()
     print("Enter the partition name(Leave blank if none)")
     os.system("lsblk")
     swap = input("Partition for swap(Ex: sda2):")
@@ -101,9 +117,9 @@ while True:
             continue
         os.system("mkswap /dev/"+swap)
         os.system("swapon /dev/"+swap)
+        clear()
         break
 while True:
-    clear()
     print("Enter the partition name(Leave blank if none)")
     os.system("lsblk")
     root = input("Partition for root(Ex: sda3):")
@@ -113,10 +129,11 @@ while True:
         except:
             invalid()
             continue
-        os.system("mkfs.ext4 /dev/"+root)
+        filetype = file_system()
+        os.system("mkfs."+filetype+" /dev/"+root)
         os.system("mount /dev/"+root+" /mnt") 
+        clear()
         break
-clear()
 print("\nBuilding the base system\n")
 while True:
     os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano less grep")
