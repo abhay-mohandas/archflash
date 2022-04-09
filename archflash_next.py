@@ -65,8 +65,10 @@ def de(condition=True):
 
 def de_wm():
     clear()
-    dewm_list= [["1","de",de(False)],
-                ["2","wm",wm(False)]]
+    value = False
+    dewm_list= [["1","de",de(value)],
+                ["2","wm",wm(value)]]
+    value = True
     while True:
         print('''Select one of the options:
             1)DE (Desktop Environment)
@@ -151,9 +153,11 @@ def xorg_input(condition=True):
 
 def drivers():
     clear()
-    driver_list  = [["1",open_video()],
-                    ["2",closed_video()],
-                    ["3",xorg_input()]]
+    value=False
+    driver_list  = [["1",open_video(value)],
+                    ["2",closed_video(value)],
+                    ["3",xorg_input(value)]]
+    value=True
     while True:
         print("""List of types of video driver to install:
     1) Open Source video driver (Ex:AMD,ATI,Intel,Other Xorg video drivers) 
@@ -291,7 +295,7 @@ os.system("systemctl enable reflector.service")
 clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
 zip unzip p7zip unrar lzop rsync gnu-free-fonts traceroute e2fsprogs bind-tools linux linux-headers \
-networkmanager openssh cronie xdg-user-dirs haveged grub libinput dosfstools ntfs-3g btrfs-progs \
+networkmanager openssh cronie xdg-user-dirs haveged grub libinput ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
 pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
 print("\nInstalling necessary/basic programs and dependencies\n")
@@ -332,6 +336,7 @@ os.system("passwd root")
 clear()
 user_list = []
 while True:
+    print("\n(Note: Create atleast one account)")
     account_name=input("\nEnter the user account name(Leave blank to continue):")
     if account_name.lower() == "":
         break
@@ -411,7 +416,6 @@ if ans.lower() != "n":
     if ans.lower() != "n":
         soft_list=input("Enter the package name to be installed(separate by space for multiple packages):")
         os.system("pacman -S "+soft_list)
-clear()
 while True:
     a = input("Enter custom command to be executed(Leave blank to skip): ")
     if not(a):
