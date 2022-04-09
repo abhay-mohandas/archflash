@@ -9,9 +9,7 @@ def install(packages):
 def invalid():
     print("\033[31m Invalid input! Try again...\033[0m\n")
 
-def wm(condition=True):
-    if not(condition):
-        return
+def wm():
     clear()
     wm_list =  [["Stacking","fluxbox","openbox"],
                 ["Manual Tiling","bspwm","herbstluftwm","i3"],
@@ -33,9 +31,7 @@ def wm(condition=True):
         clear()
         invalid()
 
-def de(condition=True):
-    if not(condition):
-        return
+def de():
     clear()
     de_list =  [["Gnome",["gnome","(Standard)"],["gnome-shell","(Minimal)"],["gnome-extra","(Standard with extra packages)"]],
                 ["KDE plasma",["plasma","(Standard)"],["plasma-desktop","(Minimal)"]],
@@ -65,10 +61,8 @@ def de(condition=True):
 
 def de_wm():
     clear()
-    value = False
-    dewm_list= [["1","de",de(value)],
-                ["2","wm",wm(value)]]
-    value = True
+    dewm_list= [["1","de",de],
+                ["2","wm",wm]]
     while True:
         print('''Select one of the options:
             1)DE (Desktop Environment)
@@ -78,14 +72,12 @@ def de_wm():
             return
         for x in dewm_list:
             if de_or_wm.lower in x:
-                x[2]
+                x[2]()
                 return de_wm()
         clear()
         invalid()
 
-def open_video(condition=True):
-    if not(condition):
-        return
+def open_video():
     clear()
     open_driver_list =     [["1","xf86-video-amdgpu","amd"],
                             ["2","xf86-video-intel","intel"],
@@ -109,9 +101,7 @@ def open_video(condition=True):
         clear()
         invalid()
 
-def closed_video(condition=True):
-    if not(condition):
-        return
+def closed_video():
     clear()
     closed_driver_list  =  [["1","nvidia","nvidia"]]
     while True:
@@ -128,9 +118,7 @@ def closed_video(condition=True):
         clear()
         invalid()
 
-def xorg_input(condition=True):
-    if not(condition):
-        return
+def xorg_input():
     clear()
     xorg_input_list  = [["1","xf86-input-evdev","evdev input driver"],
                         ["2","xf86-input-libinput","Generic input driver for the Xorg server based on libinput"],
@@ -153,11 +141,9 @@ def xorg_input(condition=True):
 
 def drivers():
     clear()
-    value=False
-    driver_list  = [["1",open_video(value)],
-                    ["2",closed_video(value)],
-                    ["3",xorg_input(value)]]
-    value=True
+    driver_list  = [["1",open_video],
+                    ["2",closed_video],
+                    ["3",xorg_input]]
     while True:
         print("""List of types of video driver to install:
     1) Open Source video driver (Ex:AMD,ATI,Intel,Other Xorg video drivers) 
@@ -171,7 +157,7 @@ Note:Open source Nvidia drivers are also listed(Under Open Source option) but in
             return
         for x in driver_list:
             if video_type == x[0]:
-                x[1]
+                x[1]()
                 return drivers()
         clear()
         invalid()
