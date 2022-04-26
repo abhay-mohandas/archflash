@@ -142,8 +142,15 @@ while True:
         break
 os.system("genfstab -U -p /mnt >> /mnt/etc/fstab")
 os.system("cp archflash_next.py /mnt")
-os.system("arch-chroot /mnt/ python archflash_next.py")
+try:
+	open("archflash_next.py")
+	file_name="archflash_next.py"
+except:
+	open("archflash/archflash_next.py")
+	file_name="archflash/archflash_next.py"
+os.system("arch-chroot /mnt/ python "+file_name)
 clear()
+os.system("umount -R /mnt")
 print("***Installation Complete!***\n\n")
 ans = input("Reboot the system?(Y/n):")
 if ans.lower() != "n":
