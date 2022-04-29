@@ -137,7 +137,7 @@ while True:
 print("\nBuilding the base system\n")
 while True:
     os.system("pacstrap /mnt base linux linux-firmware dosfstools python nano less grep")
-    ans=input("\nDid the above programs installed successfully?(Y/n):")
+    ans=input("\nDid the above programs installed successfully?[Y/n]:") or "y"
     if ans.lower() != "n":
         break
 os.system("genfstab -U -p /mnt >> /mnt/etc/fstab")
@@ -155,7 +155,9 @@ print("***Installation Complete!***\n\n")
 ans = input("Reboot the system?(Y/n):")
 if ans.lower() != "n":
     print("Rebooting in 5 seconds")
-    time.sleep(5)
+    for x in range(1,6):
+        print(x,"...",end=" ")
+        time.sleep(1)
     os.system('reboot')
 else:
     clear()
