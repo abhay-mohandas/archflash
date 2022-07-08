@@ -280,8 +280,8 @@ os.system("pacman -S reflector")
 os.system("systemctl enable reflector.service")
 clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
-zip unzip p7zip unrar lzop rsync gnu-free-fonts traceroute e2fsprogs bind-tools linux linux-headers \
-networkmanager openssh cronie xdg-user-dirs haveged grub libinput ntfs-3g btrfs-progs \
+zip unzip unrar lzop rsync gnu-free-fonts traceroute e2fsprogs bind-tools linux linux-headers \
+networkmanager openssh cronie xdg-user-dirs haveged gvfs gvfs-mtp grub libinput ntfs-3g btrfs-progs \
 exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
 pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
 print("\nInstalling necessary/basic programs and dependencies\n")
@@ -336,7 +336,7 @@ while True:
 user_list.append("none")
 clear()
 aur_list=["yay","paru","trizen","aura","none"]
-ans=input("Install an AUR helper?[Y/n]:")
+ans=input("Install an AUR helper?(Note:Requires user account with sudo previlages)[Y/n]:")
 if ans.lower() != "n":
     y=1
     print("Since root users are not allowed to build/install AUR helper directly, one of the previously created user accounts with sudo previlages will be used\n")
