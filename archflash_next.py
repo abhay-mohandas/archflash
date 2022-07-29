@@ -1,4 +1,6 @@
-import os
+import os,sys
+
+boot_drive = sys.argv[1]
 
 def clear():
     os.system("clear")
@@ -126,7 +128,7 @@ def xorg_input():
                         ["4","xf86-input-vmmouse","VMWare mouse input driver"],
                         ["5","xf86-input-void","void input driver"]]
     while True:
-        print("List of Xorg input driver:")
+        print("List of input driver:")
         for x in xorg_input_list:
             print(x[0]+")"+x[1]+" ("+x[2].capitalize()+")")
         input_ans = input("Enter the option name/number(Leave the input blank to cancel): ")
@@ -275,15 +277,10 @@ if parallel.lower()!="n":
     os.system('echo "[options]" >> /etc/pacman.conf')
     os.system('echo "ParallelDownloads='+str(parallel_num)+'" >> /etc/pacman.conf')
 clear()
-print("Installing Reflector to update the mirror list...")
-os.system("pacman -S reflector")
-os.system("systemctl enable reflector.service")
-clear()
 basic_programs = '''pacman-contrib archlinux-keyring base-devel systemd usbutils lsof dialog \
 zip unzip unrar lzop rsync gnu-free-fonts traceroute e2fsprogs bind-tools linux linux-headers \
 networkmanager openssh cronie xdg-user-dirs haveged gvfs gvfs-mtp grub libinput ntfs-3g btrfs-progs \
-exfat-utils gptfdisk fuse2 fuse3 fuseiso pulseaudio pulseaudio-alsa alsa-utils alsa-plugins \
-pulseaudio-bluetooth pulseaudio-equalizer xorg-server xorg-xinit git efibootmgr'''
+exfat-utils gptfdisk fuse2 fuse3 fuseiso efibootmgr'''
 print("\nInstalling necessary/basic programs and dependencies\n")
 print("The following programs will be installed:\n"+basic_programs+"\n")
 while True:    
@@ -308,10 +305,10 @@ clear()
 os.system("systemctl enable sshd cronie NetworkManager")
 clear()
 print("GRUB Configuration...\n")
-os.system("lsblk")
-ans = input("Enter the name of the boot partition to set up grub:")
+#os.system("lsblk")
+#ans = input("Enter the name of the boot partition to set up grub:")
 os.system("mkdir /boot/efi")
-os.system("mount /dev/"+ans+" /boot/efi")
+os.system("mount /dev/"+boot_drive+" /boot/efi")
 os.system("grub-install --target=x86_64-efi --bootloader-id=GRUB --efi-directory=/boot/efi")
 os.system("mkdir /boot/grub")
 os.system("grub-mkconfig -o /boot/grub/grub.cfg")

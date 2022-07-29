@@ -148,7 +148,7 @@ try:
 except:
 	open("archflash/archflash_next.py")
 	file_name="archflash/archflash_next.py"
-os.system("arch-chroot /mnt/ python "+file_name)
+os.system("arch-chroot /mnt/ python "+file_name+" "+boot)
 clear()
 os.system("umount -R /mnt")
 print("***Installation Complete!***\n\n")
